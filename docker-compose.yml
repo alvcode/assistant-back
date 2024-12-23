@@ -1,0 +1,36 @@
+services:
+  assistant-nginx:
+    image: nginx:latest
+    container_name: assistant-nginx
+    volumes:
+      - ./:/var/www
+      - ./_docker/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - "8053:80"
+    depends_on:
+      - assistant-app
+
+  assistant-app:
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    container_name: assistant-app
+    volumes:
+      - ./:/var/www
+
+###> doctrine/doctrine-bundle ###
+  assistant-db:
+    image: postgres:16.6-alpine3.20
+    container_name: assistant-db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5489:5432"
+    volumes:
+      - /var/lib/assistant-pg:/var/lib/postgresql/data:rw
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
