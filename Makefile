@@ -37,7 +37,6 @@ restore-db: # with param file=path/to/backup
 	echo "Database restored successfully"
 
 
-
 # ========================================================= COMPOSER/APP ==========================================
 composer-install:
 	docker exec -it assistant-app composer install -n;
@@ -59,3 +58,8 @@ back-bash:
 
 pgs-bash:
 	docker exec -it assistant-db bash;
+
+
+# ========================================================= PRODUCTION COMMANDS ==========================================
+clear-cache-prod:
+	docker exec -it assistant-app bin/console cache:clear --env=prod

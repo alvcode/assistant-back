@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
       libpng-dev \
       libzip-dev \
       libonig-dev \
+      libicu-dev \
       zip unzip \
       autoconf \
       gcc \
@@ -17,6 +18,8 @@ RUN apt-get update && apt-get install -y \
       docker-php-ext-install zip && \
       docker-php-ext-install mbstring && \
       docker-php-ext-install sockets && \
+      docker-php-ext-configure intl && \
+      docker-php-ext-install intl && \
       apt-get install -y libmagickwand-dev && \
       pecl install imagick && \
       docker-php-ext-enable imagick && \
