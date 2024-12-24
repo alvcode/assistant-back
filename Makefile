@@ -23,6 +23,9 @@ deploy:
 	make composer-install;
 	make test;
 
+fpm-restart:
+	docker exec -it assistant-app kill -USR2 1
+
 backup-db:
 	docker exec assistant-db pg_dump -U $(DB_USERNAME) -d $(DB_DATABASE) > $(DB_LOCAL_BACKUP_PATH)/$(shell date +%Y-%m-%d_%H-%M-%S).sql
 	chown -R $(DB_LOCAL_BACKUP_OWNER):$(DB_LOCAL_BACKUP_OWNER) $(DB_LOCAL_BACKUP_PATH);

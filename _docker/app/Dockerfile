@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
       autoconf \
       gcc \
       make \
+      procps \
       git && \
       docker-php-ext-install pdo_pgsql && \
       docker-php-ext-install bcmath && \
@@ -20,6 +21,7 @@ RUN apt-get update && apt-get install -y \
       docker-php-ext-install sockets && \
       docker-php-ext-configure intl && \
       docker-php-ext-install intl && \
+      docker-php-ext-install opcache && \
       apt-get install -y libmagickwand-dev && \
       pecl install imagick && \
       docker-php-ext-enable imagick && \
@@ -33,5 +35,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN curl -sS https://getcomposer.org/installer | php -- \
     --filename=composer \
     --install-dir=/usr/local/bin
+
+RUN echo "zend_extension=$(php-config --extension-dir)/opcache.so" >> /usr/local/etc/php/conf.d/xdebug.ini
+COPY ./_docker/app/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 WORKDIR /var/www

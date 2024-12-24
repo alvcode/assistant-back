@@ -9,12 +9,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class AuthController extends AbstractController
 {
-    #[Route('/v1/auth/register', name: 'auth_register', methods: ['POST'])]
+    #[Route('/api/auth/register', name: 'auth_register', methods: ['POST'])]
     public function register(Request $request): Response
     {
+        //phpinfo();
 
-        //$request->query->get('name');
-        return $this->json(['result' => ['ok']]);
+        return $this->json(['result' => ['eleven']]);
+
         //return ['success' => true];
 //        return $this->render('default/index.html.twig', [
 //            'controller_name' => 'DefaultController',
