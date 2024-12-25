@@ -29,8 +29,3 @@ services:
       - "5489:5432"
     volumes:
       - /var/lib/assistant-pg:/var/lib/postgresql/data:rw
-
-volumes:
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###

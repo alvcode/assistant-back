@@ -6,6 +6,12 @@ meta {
 
 post {
   url: {{domain}}/api/auth/register
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "login": "alvcode"
+  }
 }
