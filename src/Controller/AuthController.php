@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Controller\RequestModels\Auth\RegisterRM;
 use App\Exception\ValidationHttpException;
+use App\InfrastructureFacades\Lang;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -16,7 +17,7 @@ class AuthController extends AbstractController
     {
         $errors = $request->validate();
         //throw new \Exception("test1");
-        throw new ValidationHttpException("Ошибка валидации", $errors);
+
 
 //
 //        if (count($errors) > 0) {

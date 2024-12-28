@@ -2,19 +2,21 @@
 
 namespace App\Exception;
 
+use App\InfrastructureFacades\Lang;
+use App\Layer\Base\ErrorsExceptionDto\ErrorExceptionDto;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ValidationHttpException extends HttpException
 {
-    private array $errors;
+    private ?ErrorExceptionDto $errors;
 
-    public function __construct(string $message = '', array $errors = [], ?\Throwable $previous = null, int $code = 0, array $headers = [])
+    public function __construct(?ErrorExceptionDto $errors = null, ?\Throwable $previous = null, int $code = 0, array $headers = [])
     {
-        parent::__construct(422, $message, $previous, $headers, $code);
+        parent::__construct(422, Lang::t('error_exception_validation'), $previous, $headers, $code);
         $this->errors = $errors;
     }
 
-    public function getErrors(): array
+    public function getErrors(): ?ErrorExceptionDto
     {
         return $this->errors;
     }

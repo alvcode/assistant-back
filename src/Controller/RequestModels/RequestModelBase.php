@@ -2,6 +2,10 @@
 
 namespace App\Controller\RequestModels;
 
+use App\Exception\ValidationHttpException;
+use App\Layer\Base\ErrorsExceptionDto\DetailErrorExceptionDto;
+use App\Layer\Base\ErrorsExceptionDto\DetailErrorExceptionDtoCollection;
+use App\Layer\Base\ErrorsExceptionDto\ErrorExceptionDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -14,22 +18,37 @@ class RequestModelBase
         $this->populate();
     }
 
-    public function validate(): array
+    public function validate(): bool
     {
         $errors = $this->validator->validate($this);
 
-        $messages = ['message' => 'validation_failed', 'errors' => []];
+        //$messages = ['message' => 'validation_failed', 'errors' => []];
 
+        $errorsList = [];
+        $detailsDtoCollection = new DetailErrorExceptionDtoCollection();
         /** @var \Symfony\Component\Validator\ConstraintViolation  */
         foreach ($errors as $message) {
-            $messages['errors'][] = [
-                'property' => $message->getPropertyPath(),
-                'value' => $message->getInvalidValue(),
-                'message' => $message->getMessage(),
-            ];
+            //$detailErrorExceptionDto = new DetailErrorExceptionDto($message->getPropertyPath(), $message->getMessage());
+            $detailsDtoCollection->add(
+                new DetailErrorExceptionDto($message->getPropertyPath(), $message->getMessage())
+            );
+//            $errorsList[] = [
+//                'property' => $message->getPropertyPath(),
+//                'value' => $message->getInvalidValue(),
+//                'message' => $message->getMessage(),
+//            ];
         }
 
-        return $messages;
+        if ($detailsDtoCollection->existsItems()) {
+            throw new ValidationHttpException(
+                new ErrorExceptionDto(ErrorExceptionDto::TYPE_INPUT_VALIDATE, $detailsDtoCollection)
+            );
+//            foreach ()
+//            $errorExceptionDto = new ErrorExceptionDto();
+
+        }
+
+        return true;
     }
 
     public function getRequest(): Request

@@ -2,6 +2,8 @@
 
 namespace App\EventListener;
 
+use App\InfrastructureFacades\Lang;
+use App\Layer\Base\ErrorsExceptionDto\ErrorExceptionDto;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -32,14 +34,16 @@ class ValidationExceptionListener
             ];
         } else {
             $result = [
-                'message' => 'Internal Server Error',
+                'message' => Lang::t('error_internal_server_error'),
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'code' => 0,
             ];
         }
 
         if (method_exists($exception, 'getErrors')) {
-            $result['errors'] = $exception->getErrors();
+            if ($exception->getErrors() instanceof ErrorExceptionDto) {
+                $result['errors'] = $exception->getErrors()->toArray();
+            }
         }
 
         if ($this->isDebug) {
