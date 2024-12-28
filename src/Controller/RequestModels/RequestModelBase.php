@@ -6,49 +6,36 @@ use App\Exception\ValidationHttpException;
 use App\Layer\Base\ErrorsExceptionDto\DetailErrorExceptionDto;
 use App\Layer\Base\ErrorsExceptionDto\DetailErrorExceptionDtoCollection;
 use App\Layer\Base\ErrorsExceptionDto\ErrorExceptionDto;
+use App\Layer\Base\Model;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class RequestModelBase
+class RequestModelBase extends Model
 {
-    public function __construct(protected ValidatorInterface $validator)
+    public function __construct(private readonly ValidatorInterface $validator)
     {
         $this->populate();
     }
 
-    public function validate(): bool
+    public function validate(): static
     {
         $errors = $this->validator->validate($this);
 
-        //$messages = ['message' => 'validation_failed', 'errors' => []];
-
-        $errorsList = [];
         $detailsDtoCollection = new DetailErrorExceptionDtoCollection();
         /** @var \Symfony\Component\Validator\ConstraintViolation  */
         foreach ($errors as $message) {
-            //$detailErrorExceptionDto = new DetailErrorExceptionDto($message->getPropertyPath(), $message->getMessage());
             $detailsDtoCollection->add(
                 new DetailErrorExceptionDto($message->getPropertyPath(), $message->getMessage())
             );
-//            $errorsList[] = [
-//                'property' => $message->getPropertyPath(),
-//                'value' => $message->getInvalidValue(),
-//                'message' => $message->getMessage(),
-//            ];
         }
 
         if ($detailsDtoCollection->existsItems()) {
             throw new ValidationHttpException(
                 new ErrorExceptionDto(ErrorExceptionDto::TYPE_INPUT_VALIDATE, $detailsDtoCollection)
             );
-//            foreach ()
-//            $errorExceptionDto = new ErrorExceptionDto();
-
         }
 
-        return true;
+        return $this;
     }
 
     public function getRequest(): Request

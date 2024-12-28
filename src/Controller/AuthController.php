@@ -15,7 +15,9 @@ class AuthController extends AbstractController
     #[Route('/api/auth/register', name: 'auth_register', methods: ['POST'])]
     public function register(RegisterRM $request): Response
     {
-        $errors = $request->validate();
+        $request = $request->validate();
+
+        var_dump($request->toArray()); exit();
         //throw new \Exception("test1");
 
 
