@@ -27,6 +27,9 @@ class ValidationExceptionListener
 
         //if ($exception->getStatusCode() && $exception->getStatusCode() >= 400 && $exception->getStatusCode() <= 499) {
         if ($exception instanceof HttpException || $this->isDebug) {
+            if ($exception->getStatusCode() === 401) {
+                $message = Lang::t('error_you_are_unauthorized');
+            }
             $result = [
                 'message' => $message,
                 'status' => $status,
