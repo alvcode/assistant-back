@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-//#[IsGranted(attribute: 'IS_AUTHENTICATED_FULLY', statusCode: 401)]
+#[IsGranted(attribute: 'IS_AUTHENTICATED_FULLY', statusCode: 401)]
 #[IsGranted(attribute: UserRolesDictionary::ROLE_USER, statusCode: 403)]
 class NotesController extends AbstractController
 {

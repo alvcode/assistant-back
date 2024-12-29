@@ -15,9 +15,6 @@ security:
             security: false
 
         api:
-            pattern: ^/api/auth
-            stateless: true
-
             json_login:
                 check_path: /api/auth/login
                 username_path: login
@@ -26,6 +23,11 @@ security:
 
             refresh_jwt:
                 check_path: /api/auth/refresh
+
+            pattern: ^/api
+            stateless: true
+            entry_point: jwt
+            jwt: ~
 
         main:
             lazy: true
@@ -42,6 +44,7 @@ security:
     access_control:
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/refresh, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: PUBLIC_ACCESS }
         #- { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
