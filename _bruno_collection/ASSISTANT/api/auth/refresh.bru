@@ -1,0 +1,17 @@
+meta {
+  name: refresh
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/api/auth/refresh
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "refresh_token": "bda8dfb126055a68db560e2fe235dac2fd4b958cf36007978b5de512e8c5f13f4e7e7dd05fa9fa3e90da469b51d31807cc6559fd03c092b91c55eea29121e2d3"
+  }
+}

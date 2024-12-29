@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Layer\Base\BaseEntity;
+use App\Layer\Domain\User\Security\AuthUserInterface;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -10,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_LOGIN', fields: ['login'])]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User extends BaseEntity implements AuthUserInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

@@ -1,17 +1,17 @@
 meta {
-  name: register
+  name: login
   type: http
-  seq: 1
+  seq: 2
 }
 
 post {
-  url: {{domain}}/api/auth/register
+  url: {{domain}}/api/auth/login
   body: json
   auth: none
 }
 
 headers {
-  locale: en
+  ~locale: en
 }
 
 body:json {

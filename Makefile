@@ -9,13 +9,12 @@ stop:
 start-prod:
 	docker compose -f docker-compose-prod.yml up -d;
 
+stop-prod:
+	docker compose -f docker-compose-prod.yml down;
+
 prod-pull:
 	git pull;
 	make set-prod-perm;
-
-set-prod-perm:
-	chown -R www-data:www-data ./;
-	chmod -R 775 ./storage ./bootstrap/cache;
 
 deploy:
 	make prod-pull;
@@ -66,3 +65,9 @@ pgs-bash:
 # ========================================================= PRODUCTION COMMANDS ==========================================
 clear-cache-prod:
 	docker exec -it assistant-app bin/console cache:clear --env=prod
+
+jwt-gen:
+	docker exec -it assistant-app bin/console lexik:jwt:generate-keypair
+
+jwt-gen-overwrite:
+	docker exec -it assistant-app bin/console lexik:jwt:generate-keypair --overwrite
