@@ -38,6 +38,18 @@ restore-db: # with param file=path/to/backup
 	docker exec -i assistant-db psql -U $(DB_USERNAME) -d $(DB_DATABASE) < $(file)
 	echo "Database restored successfully"
 
+# ========================================================= migrations ==========================================
+migration:
+	docker exec -it assistant-app bin/console doctrine:migrations:generate
+
+migrate:
+	docker exec -it assistant-app bin/console doctrine:migrations:migrate
+
+migration-rollback:
+	docker exec -it assistant-app bin/console doctrine:migrations:migrate prev
+
+diff:
+	docker exec -it assistant-app bin/console doctrine:migrations:diff
 
 # ========================================================= COMPOSER/APP ==========================================
 composer-install:
