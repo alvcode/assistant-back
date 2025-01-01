@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Layer\Domain\User\Security;
+namespace App\Layer\Infrastructure\Security;
 
 interface UserFetcherInterface
 {

@@ -38,18 +38,21 @@ restore-db: # with param file=path/to/backup
 	docker exec -i assistant-db psql -U $(DB_USERNAME) -d $(DB_DATABASE) < $(file)
 	echo "Database restored successfully"
 
-# ========================================================= migrations ==========================================
-migration:
+# ========================================================= migrations / entity ==========================================
+mc:
 	docker exec -it assistant-app bin/console doctrine:migrations:generate
 
-migrate:
+m:
 	docker exec -it assistant-app bin/console doctrine:migrations:migrate
 
-migration-rollback:
+mr:
 	docker exec -it assistant-app bin/console doctrine:migrations:migrate prev
 
-diff:
+md:
 	docker exec -it assistant-app bin/console doctrine:migrations:diff
+
+ec: # name=... Название сущности
+	docker exec -it assistant-app bin/console make:entity $(name)
 
 # ========================================================= COMPOSER/APP ==========================================
 composer-install:

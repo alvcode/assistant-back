@@ -8,6 +8,7 @@ use App\Layer\Base\ErrorsExceptionDto\DetailErrorExceptionDtoCollection;
 use App\Layer\Base\ErrorsExceptionDto\ErrorExceptionDto;
 use App\Layer\Base\Model;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RequestModelBase extends Model
@@ -22,10 +23,13 @@ class RequestModelBase extends Model
         $errors = $this->validator->validate($this);
 
         $detailsDtoCollection = new DetailErrorExceptionDtoCollection();
-        /** @var \Symfony\Component\Validator\ConstraintViolation  */
+        /** @var $message ConstraintViolation  */
         foreach ($errors as $message) {
             $detailsDtoCollection->add(
-                new DetailErrorExceptionDto($message->getPropertyPath(), $message->getMessage())
+                new DetailErrorExceptionDto(
+                    !empty($message->getPropertyPath()) ? $message->getPropertyPath() : null,
+                    $message->getMessage()
+                )
             );
         }
 
@@ -45,10 +49,11 @@ class RequestModelBase extends Model
 
     protected function populate(): void
     {
-        foreach ($this->getRequest()->toArray() as $property => $value) {
-            if (property_exists($this, $property)) {
-                $this->{$property} = $value;
-            }
-        }
+        $this->loadFromArray($this->getRequest()->toArray());
+//        foreach ($this->getRequest()->toArray() as $property => $value) {
+//            if (property_exists($this, $property)) {
+//                $this->{$property} = $value;
+//            }
+//        }
     }
 }

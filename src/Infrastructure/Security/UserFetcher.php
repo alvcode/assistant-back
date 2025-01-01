@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Security;
 
-use App\Layer\Domain\User\Security\AuthUserInterface;
-use App\Layer\Domain\User\Security\UserFetcherInterface;
+use App\Layer\Infrastructure\Security\UserFetcherInterface;
+use App\Layer\Infrastructure\Security\AuthUserInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Webmozart\Assert\Assert;
 

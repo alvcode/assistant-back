@@ -13,13 +13,14 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class CreateUserUseCase
+readonly class CreateUserUseCase
 {
     public function __construct(
-        private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly UserRepository $userRepository
-    ) {
+        private UserPasswordHasherInterface $passwordHasher,
+        private EntityManagerInterface      $entityManager,
+        private UserRepository              $userRepository
+    )
+    {
 
     }
 

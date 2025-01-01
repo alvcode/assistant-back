@@ -6,7 +6,7 @@ use App\Layer\Base\BaseDto;
 
 class DetailErrorExceptionDto extends BaseDto
 {
-    public function __construct(protected string $key, protected string $message)
+    public function __construct(protected ?string $key, protected string $message)
     {
 
     }

@@ -10,10 +10,10 @@ class RegisterRM extends RequestModelBase
     #[Assert\Type('string')]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 180)]
-    public string $login;
+    public $login;
 
     #[Assert\Type('string')]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 6)]
-    public string $password;
+    public $password;
 }

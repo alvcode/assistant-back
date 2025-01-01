@@ -15,10 +15,10 @@ class Note extends BaseEntity
     #[ORM\Column]
     protected ?int $id = null;
 
-    #[ORM\Column(name: 'user_id', type: Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     protected int $user_id;
 
-    #[ORM\Column(name: 'category_id', type: Types::INTEGER, nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     protected ?int $category_id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
@@ -28,31 +28,31 @@ class Note extends BaseEntity
     protected ?string $text = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    protected string $updated_at;
+    protected \DateTime $updated_at;
 
     // inversedBy - владелец связи
     #[ORM\ManyToOne(targetEntity: NotesCategory::class, inversedBy: "notes")]
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
     protected NotesCategory|null $notes_category = null;
 
-    public function getId(): ?int
+    public function getNotesCategory(): ?NotesCategory
     {
-        return $this->id;
+        return $this->notes_category;
     }
 
-    public function getUserId(): int
+    public function setNotesCategory(?NotesCategory $notes_category): void
     {
-        return $this->user_id;
+        $this->notes_category = $notes_category;
     }
 
-    public function getCategoryId(): ?int
+    public function getUpdatedAt(): \DateTime
     {
-        return $this->category_id;
+        return $this->updated_at;
     }
 
-    public function getTitle(): ?string
+    public function setUpdatedAt(\DateTime $updated_at): void
     {
-        return $this->title;
+        $this->updated_at = $updated_at;
     }
 
     public function getText(): ?string
@@ -60,8 +60,48 @@ class Note extends BaseEntity
         return $this->text;
     }
 
-    public function getUpdatedAt(): string
+    public function setText(?string $text): void
     {
-        return $this->updated_at;
+        $this->text = $text;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getCategoryId(): ?int
+    {
+        return $this->category_id;
+    }
+
+    public function setCategoryId(?int $category_id): void
+    {
+        $this->category_id = $category_id;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(int $user_id): void
+    {
+        $this->user_id = $user_id;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 }

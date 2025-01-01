@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Layer\Base\BaseEntity;
-use App\Layer\Domain\User\Security\AuthUserInterface;
+use App\Layer\Infrastructure\Security\AuthUserInterface;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
