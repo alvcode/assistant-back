@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\RequestModels\Notes;
+namespace App\Controller\RequestModels\Note;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Controller\RequestModels\RequestModelBase;

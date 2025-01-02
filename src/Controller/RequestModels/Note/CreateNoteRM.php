@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\RequestModels\Notes;
+namespace App\Controller\RequestModels\Note;
 use App\Validator\AtLeastOneRequired\AtLeastOneRequiredConstraint;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Validator\Constraints as Assert;

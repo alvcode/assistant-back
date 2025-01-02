@@ -1,0 +1,11 @@
+meta {
+  name: delete-category
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{domain}}/api/notes/categories/5
+  body: none
+  auth: inherit
+}

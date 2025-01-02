@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class NotesCategory extends BaseEntity
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
     protected ?int $id = null;
 
