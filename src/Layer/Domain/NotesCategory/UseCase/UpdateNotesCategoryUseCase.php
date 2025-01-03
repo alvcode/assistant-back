@@ -22,9 +22,9 @@ final readonly class UpdateNotesCategoryUseCase
 
     public function handle(UpdateNotesCategoryDto $dto): NotesCategory
     {
-        $entity = $this->notesCategoryRepository->findOneBy(['id' => $dto->getId()]);
+        $entity = $this->notesCategoryRepository->findOneBy(['id' => $dto->getId(), 'user_id' => $dto->getUserId()]);
 
-        if (!$entity || $entity->getUserId() !== $dto->getUserId()) {
+        if (!$entity) {
             throw new DataExistsExternalException(Lang::t('error_notes_category_not_found'));
         }
 

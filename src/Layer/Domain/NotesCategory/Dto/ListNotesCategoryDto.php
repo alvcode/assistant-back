@@ -6,7 +6,7 @@ namespace App\Layer\Domain\NotesCategory\Dto;
 
 use App\Layer\Base\BaseDto;
 
-class GetNotesCategoryDto extends BaseDto
+class ListNotesCategoryDto extends BaseDto
 {
     public function __construct(
         protected readonly int $user_id

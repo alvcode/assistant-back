@@ -6,22 +6,28 @@ namespace App\Controller;
 
 use App\Controller\RequestModels\Note\CreateNoteRM;
 use App\Controller\RequestModels\Note\CreateNotesCategoryRM;
+use App\Controller\RequestModels\Note\ListNoteRM;
 use App\Controller\RequestModels\Note\UpdateNoteRM;
 use App\Controller\RequestModels\Note\UpdateNotesCategoryRM;
 use App\Controller\ViewModels\Note\NotesCategoryVModelCollection;
 use App\Controller\ViewModels\Note\NoteVModel;
+use App\Controller\ViewModels\Note\NoteVModelCollection;
+use App\Exception\External\DataExistsExternalException;
 use App\Layer\Domain\Note\Dto\CreateNoteDto;
+use App\Layer\Domain\Note\Dto\DeleteNoteDto;
+use App\Layer\Domain\Note\Dto\ListNoteDto;
 use App\Layer\Domain\Note\Dto\UpdateNoteDto;
 use App\Layer\Domain\Note\UseCase\CreateNoteUseCase;
 use App\Layer\Domain\Note\UseCase\DeleteNoteUseCase;
+use App\Layer\Domain\Note\UseCase\ListNoteUseCase;
 use App\Layer\Domain\Note\UseCase\UpdateNoteUseCase;
 use App\Layer\Domain\NotesCategory\Dto\CreateNotesCategoryDto;
 use App\Layer\Domain\NotesCategory\Dto\DeleteNotesCategoryDto;
-use App\Layer\Domain\NotesCategory\Dto\GetNotesCategoryDto;
+use App\Layer\Domain\NotesCategory\Dto\ListNotesCategoryDto;
 use App\Layer\Domain\NotesCategory\Dto\UpdateNotesCategoryDto;
 use App\Layer\Domain\NotesCategory\UseCase\CreateNotesCategoryUseCase;
 use App\Layer\Domain\NotesCategory\UseCase\DeleteNotesCategoryUseCase;
-use App\Layer\Domain\NotesCategory\UseCase\GetNotesCategoryUseCase;
+use App\Layer\Domain\NotesCategory\UseCase\ListNotesCategoryUseCase;
 use App\Layer\Domain\NotesCategory\UseCase\UpdateNotesCategoryUseCase;
 use App\Layer\Domain\User\Dictionary\UserRolesDictionary;
 use App\Layer\Infrastructure\Security\UserFetcherInterface;
@@ -39,10 +45,10 @@ class NoteController extends AbstractController
     #[Route('/api/notes/categories', name: 'notes_categories_list', methods: ['GET'])]
     public function listCategory(
         UserFetcherInterface $userFetcher,
-        GetNotesCategoryUseCase $useCase
+        ListNotesCategoryUseCase $useCase
     ): Response
     {
-        $getNotesCategoryDto = new GetNotesCategoryDto($userFetcher->getAuthUser()->getId());
+        $getNotesCategoryDto = new ListNotesCategoryDto($userFetcher->getAuthUser()->getId());
 
         $collection = $useCase->handle($getNotesCategoryDto);
         return $this->json((new NotesCategoryVModelCollection($collection))->getResult());
@@ -87,7 +93,7 @@ class NoteController extends AbstractController
         $deleteNotesCategoryDto = new DeleteNotesCategoryDto($id, $userFetcher->getAuthUser()->getId());
 
         $useCase->handle($deleteNotesCategoryDto);
-        return new Response(null, Response::HTTP_CREATED);
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -140,23 +146,36 @@ class NoteController extends AbstractController
         return $this->json((new NoteVModel($entity))->getResult(), Response::HTTP_CREATED);
     }
 
-    #[Route('/api/notes', name: 'notes_delete', methods: ['DELETE'])]
+    /**
+     * @throws DataExistsExternalException
+     */
+    #[Route('/api/notes/{id}', name: 'notes_delete', methods: ['DELETE'])]
     public function deleteNote(
         int $id,
         UserFetcherInterface $userFetcher,
         DeleteNoteUseCase $useCase
-    )
+    ): Response
     {
-
+        $dto = new DeleteNoteDto($id, $userFetcher->getAuthUser()->getId());
+        $useCase->handle($dto);
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/api/notes', name: 'notes_list', methods: ['GET'])]
-    public function list(): Response
+    public function listNote(
+        ListNoteRM $request,
+        UserFetcherInterface $userFetcher,
+        ListNoteUseCase $useCase
+    ): Response
     {
+        $request = $request->validate();
+        var_dump($request->toArray()); exit();
+        $dto = new ListNoteDto(
+            user_id: $userFetcher->getAuthUser()->getId(),
+            filterByCategoryId: $request->category_id,
+        );
 
-        var_dump('im from notes list');
-        exit();
-
-        return new Response(null, Response::HTTP_CREATED);
+        $collection = $useCase->handle($dto);
+        return $this->json((new NoteVModelCollection($collection))->getResult());
     }
 }

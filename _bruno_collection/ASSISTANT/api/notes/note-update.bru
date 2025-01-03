@@ -1,11 +1,19 @@
 meta {
   name: note-update
   type: http
-  seq: 6
+  seq: 7
 }
 
 put {
   url: {{domain}}/api/notes/12
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    //"category_id": 1,
+    "title": "ПокупкиИзм",
+    "text": "Измененный текст для тестирования"
+  }
 }

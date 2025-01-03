@@ -31,9 +31,9 @@ final readonly class UpdateNoteUseCase
      */
     public function handle(UpdateNoteDto $dto): Note
     {
-        $entity = $this->noteRepository->findOneBy(['id' => $dto->getId()]);
+        $entity = $this->noteRepository->findOneBy(['id' => $dto->getId(), 'user_id' => $dto->getUserId()]);
 
-        if (!$entity || $entity->getUserId() !== $dto->getUserId()) {
+        if (!$entity) {
             throw new DataExistsExternalException(Lang::t('error_note_not_found'));
         }
 

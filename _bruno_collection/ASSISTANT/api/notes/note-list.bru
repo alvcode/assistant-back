@@ -1,0 +1,17 @@
+meta {
+  name: note-list
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{domain}}/api/notes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "category_id": 1
+  }
+}
