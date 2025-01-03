@@ -10,4 +10,5 @@ return [
     'error_notes_category_not_found' => 'Category not found',
     'error_at_least_one_required_validation' => 'One of the following parameters is required: {{ fields }}',
     'error_strict_type_integer_validation' => 'The value must be an integer',
+    'error_note_not_found' => 'Note not found',
 ];

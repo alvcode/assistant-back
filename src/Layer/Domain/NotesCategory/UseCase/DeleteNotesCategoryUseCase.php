@@ -21,12 +21,9 @@ final readonly class DeleteNotesCategoryUseCase
 
     public function handle(DeleteNotesCategoryDto $dto): void
     {
-        $entity = $this->notesCategoryRepository->findOneBy([
-            'id' => $dto->getId(),
-            'user_id' => $dto->getUserId(),
-        ]);
+        $entity = $this->notesCategoryRepository->findOneBy(['id' => $dto->getId()]);
 
-        if (!$entity) {
+        if (!$entity || $entity->getUserId() !== $dto->getUserId()) {
             throw new DataExistsExternalException(Lang::t('error_notes_category_not_found'));
         }
 

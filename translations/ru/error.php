@@ -10,4 +10,5 @@ return [
     'error_notes_category_not_found' => 'Категория не найдена',
     'error_at_least_one_required_validation' => 'Один из следующих параметров обязателен для заполнения: {{ fields }}',
     'error_strict_type_integer_validation' => 'Значение должно быть целым числом (int)',
+    'error_note_not_found' => 'Заметка не найдена',
 ];

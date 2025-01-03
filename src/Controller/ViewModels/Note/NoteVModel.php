@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\ViewModels\Note;
 
-use App\Controller\ViewModels\ViewModelInterface;
+use App\Controller\ViewModels\ViewModelBase;
 use App\Entity\Note;
 
-class CreateNoteVModel implements ViewModelInterface
+class NoteVModel extends ViewModelBase
 {
-    private array $result = [];
-
     public function __construct(Note $note)
     {
         $this->result = [
@@ -26,6 +24,4 @@ class CreateNoteVModel implements ViewModelInterface
     {
         return $this->result;
     }
-
-
 }

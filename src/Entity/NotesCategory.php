@@ -31,8 +31,18 @@ class NotesCategory extends BaseEntity
         return $this->id;
     }
 
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
+
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getNotes(): ?Collection
+    {
+        return $this->notes;
     }
 }

@@ -6,15 +6,22 @@ namespace App\Controller;
 
 use App\Controller\RequestModels\Note\CreateNoteRM;
 use App\Controller\RequestModels\Note\CreateNotesCategoryRM;
+use App\Controller\RequestModels\Note\UpdateNoteRM;
 use App\Controller\RequestModels\Note\UpdateNotesCategoryRM;
-use App\Controller\ViewModels\Note\CreateNoteVModel;
+use App\Controller\ViewModels\Note\NotesCategoryVModelCollection;
+use App\Controller\ViewModels\Note\NoteVModel;
 use App\Layer\Domain\Note\Dto\CreateNoteDto;
+use App\Layer\Domain\Note\Dto\UpdateNoteDto;
 use App\Layer\Domain\Note\UseCase\CreateNoteUseCase;
+use App\Layer\Domain\Note\UseCase\DeleteNoteUseCase;
+use App\Layer\Domain\Note\UseCase\UpdateNoteUseCase;
 use App\Layer\Domain\NotesCategory\Dto\CreateNotesCategoryDto;
 use App\Layer\Domain\NotesCategory\Dto\DeleteNotesCategoryDto;
+use App\Layer\Domain\NotesCategory\Dto\GetNotesCategoryDto;
 use App\Layer\Domain\NotesCategory\Dto\UpdateNotesCategoryDto;
 use App\Layer\Domain\NotesCategory\UseCase\CreateNotesCategoryUseCase;
 use App\Layer\Domain\NotesCategory\UseCase\DeleteNotesCategoryUseCase;
+use App\Layer\Domain\NotesCategory\UseCase\GetNotesCategoryUseCase;
 use App\Layer\Domain\NotesCategory\UseCase\UpdateNotesCategoryUseCase;
 use App\Layer\Domain\User\Dictionary\UserRolesDictionary;
 use App\Layer\Infrastructure\Security\UserFetcherInterface;
@@ -29,20 +36,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted(attribute: UserRolesDictionary::ROLE_USER, statusCode: 403)]
 class NoteController extends AbstractController
 {
-    #[Route('/api/notes/categories', name: 'notes_category_create', methods: ['GET'])]
-    public function createCategory(
+    #[Route('/api/notes/categories', name: 'notes_categories_list', methods: ['GET'])]
+    public function listCategory(
         UserFetcherInterface $userFetcher,
-        CreateNotesCategoryUseCase $useCase
+        GetNotesCategoryUseCase $useCase
     ): Response
     {
-        $request = $request->validate();
-        $createNotesCategoryDto = new CreateNotesCategoryDto($userFetcher->getAuthUser()->getId(), $request->name);
+        $getNotesCategoryDto = new GetNotesCategoryDto($userFetcher->getAuthUser()->getId());
 
-        $useCase->handle($createNotesCategoryDto);
-        return new Response(null, Response::HTTP_CREATED);
+        $collection = $useCase->handle($getNotesCategoryDto);
+        return $this->json((new NotesCategoryVModelCollection($collection))->getResult());
     }
 
-    #[Route('/api/notes/categories', name: 'notes_category_create', methods: ['POST'])]
+    #[Route('/api/notes/categories', name: 'notes_categories_create', methods: ['POST'])]
     public function createCategory(
         CreateNotesCategoryRM $request,
         UserFetcherInterface $userFetcher,
@@ -56,7 +62,7 @@ class NoteController extends AbstractController
         return new Response(null, Response::HTTP_CREATED);
     }
 
-    #[Route('/api/notes/categories/{id}', name: 'notes_category_update', methods: ['PUT'])]
+    #[Route('/api/notes/categories/{id}', name: 'notes_categories_update', methods: ['PUT'])]
     public function updateCategory(
         int $id,
         UpdateNotesCategoryRM $request,
@@ -71,7 +77,7 @@ class NoteController extends AbstractController
         return new Response(null, Response::HTTP_CREATED);
     }
 
-    #[Route('/api/notes/categories/{id}', name: 'notes_category_update', methods: ['DELETE'])]
+    #[Route('/api/notes/categories/{id}', name: 'notes_categories_delete', methods: ['DELETE'])]
     public function deleteCategory(
         int $id,
         UserFetcherInterface $userFetcher,
@@ -105,9 +111,43 @@ class NoteController extends AbstractController
 
         $noteEntity = $useCase->handle($createNoteDto);
         return $this->json(
-            (new CreateNoteVModel($noteEntity))->getResult(),
+            (new NoteVModel($noteEntity))->getResult(),
             Response::HTTP_CREATED
         );
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/api/notes/{id}', name: 'notes_update', methods: ['PUT'])]
+    public function updateNote(
+        int $id,
+        UpdateNoteRM $request,
+        UserFetcherInterface $userFetcher,
+        UpdateNoteUseCase $useCase
+    ): Response
+    {
+        $request = $request->validate();
+
+        $dto = new UpdateNoteDto(
+            id: $id,
+            user_id: $userFetcher->getAuthUser()->getId(),
+            category_id: $request->category_id,
+            title: $request->title,
+            text: $request->text
+        );
+        $entity = $useCase->handle($dto);
+        return $this->json((new NoteVModel($entity))->getResult(), Response::HTTP_CREATED);
+    }
+
+    #[Route('/api/notes', name: 'notes_delete', methods: ['DELETE'])]
+    public function deleteNote(
+        int $id,
+        UserFetcherInterface $userFetcher,
+        DeleteNoteUseCase $useCase
+    )
+    {
+
     }
 
     #[Route('/api/notes', name: 'notes_list', methods: ['GET'])]
