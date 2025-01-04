@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{domain}}/api/notes
-  body: json
+  url: {{domain}}/api/notes?sort_order=desc
+  body: none
   auth: inherit
 }
 
-body:json {
-  {
-    "category_id": 1
-  }
+params:query {
+  sort_order: desc
+  ~category_id: 6
+  ~sort_by: updated_at
 }

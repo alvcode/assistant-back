@@ -11,5 +11,15 @@ use App\Controller\RequestModels\RequestModelBase;
 class ListNoteRM extends RequestModelBase
 {
     #[Assert\Type(Types::INTEGER)]
-    public $category_id = null;
+    public ?int $category_id = null;
+
+    #[Assert\Type(Types::STRING)]
+    #[Assert\Length(max: 30)]
+    #[Assert\Choice(['id', 'updated_at'])]
+    public ?string $sort_by = null;
+
+    #[Assert\Type(Types::STRING)]
+    #[Assert\Length(max: 4)]
+    #[Assert\Choice(['desc', 'asc'])]
+    public ?string $sort_order = null;
 }

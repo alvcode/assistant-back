@@ -13,13 +13,18 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RequestModelBase extends Model
 {
-    public function __construct(private readonly ValidatorInterface $validator)
+    private Request $request;
+
+    public function __construct(
+        private readonly ValidatorInterface $validator,
+    )
     {
-        $this->populate();
     }
 
     public function validate(): static
     {
+        $this->populate();
+
         $errors = $this->validator->validate($this);
 
         $detailsDtoCollection = new DetailErrorExceptionDtoCollection();
@@ -42,18 +47,18 @@ class RequestModelBase extends Model
         return $this;
     }
 
-    public function getRequest(): Request
+    public function setRequest(Request $request): static
     {
-        return Request::createFromGlobals();
+        $this->request = $request;
+        return $this;
     }
 
     protected function populate(): void
     {
-        $this->loadFromArray($this->getRequest()->toArray());
-//        foreach ($this->getRequest()->toArray() as $property => $value) {
-//            if (property_exists($this, $property)) {
-//                $this->{$property} = $value;
-//            }
-//        }
+        if ($this->request->isMethod('GET')) {
+            $this->loadFromArray($this->request->query->all());
+        } else {
+            $this->loadFromArray($this->request->toArray());
+        }
     }
 }

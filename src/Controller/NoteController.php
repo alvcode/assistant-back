@@ -34,6 +34,7 @@ use App\Layer\Infrastructure\Security\UserFetcherInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -56,13 +57,16 @@ class NoteController extends AbstractController
 
     #[Route('/api/notes/categories', name: 'notes_categories_create', methods: ['POST'])]
     public function createCategory(
-        CreateNotesCategoryRM $request,
+        Request $request,
+        CreateNotesCategoryRM $requestModel,
         UserFetcherInterface $userFetcher,
         CreateNotesCategoryUseCase $useCase
     ): Response
     {
-        $request = $request->validate();
-        $createNotesCategoryDto = new CreateNotesCategoryDto($userFetcher->getAuthUser()->getId(), $request->name);
+        $requestValidate = $requestModel->setRequest($request);
+        $requestValidate->validate();
+
+        $createNotesCategoryDto = new CreateNotesCategoryDto($userFetcher->getAuthUser()->getId(), $requestValidate->name);
 
         $useCase->handle($createNotesCategoryDto);
         return new Response(null, Response::HTTP_CREATED);
@@ -71,13 +75,16 @@ class NoteController extends AbstractController
     #[Route('/api/notes/categories/{id}', name: 'notes_categories_update', methods: ['PUT'])]
     public function updateCategory(
         int $id,
-        UpdateNotesCategoryRM $request,
+        Request $request,
+        UpdateNotesCategoryRM $requestModel,
         UserFetcherInterface $userFetcher,
         UpdateNotesCategoryUseCase $useCase
     ): Response
     {
-        $request = $request->validate();
-        $updateNotesCategoryDto = new UpdateNotesCategoryDto($id, $userFetcher->getAuthUser()->getId(), $request->name);
+        $requestValidate = $requestModel->setRequest($request);
+        $requestValidate->validate();
+
+        $updateNotesCategoryDto = new UpdateNotesCategoryDto($id, $userFetcher->getAuthUser()->getId(), $requestValidate->name);
 
         $useCase->handle($updateNotesCategoryDto);
         return new Response(null, Response::HTTP_CREATED);
@@ -102,17 +109,20 @@ class NoteController extends AbstractController
      */
     #[Route('/api/notes', name: 'notes_create', methods: ['POST'])]
     public function createNote(
-        CreateNoteRM $request,
+        Request $request,
+        CreateNoteRM $requestModel,
         UserFetcherInterface $userFetcher,
         CreateNoteUseCase $useCase
     ): Response
     {
-        $request = $request->validate();
+        $requestValidate = $requestModel->setRequest($request);
+        $requestValidate->validate();
+
         $createNoteDto = new CreateNoteDto(
             user_id: $userFetcher->getAuthUser()->getId(),
-            category_id: $request->category_id,
-            title: $request->title,
-            text: $request->text
+            category_id: $requestValidate->category_id,
+            title: $requestValidate->title,
+            text: $requestValidate->text
         );
 
         $noteEntity = $useCase->handle($createNoteDto);
@@ -128,19 +138,21 @@ class NoteController extends AbstractController
     #[Route('/api/notes/{id}', name: 'notes_update', methods: ['PUT'])]
     public function updateNote(
         int $id,
-        UpdateNoteRM $request,
+        Request $request,
+        UpdateNoteRM $requestModel,
         UserFetcherInterface $userFetcher,
         UpdateNoteUseCase $useCase
     ): Response
     {
-        $request = $request->validate();
+        $requestValidate = $requestModel->setRequest($request);
+        $requestValidate->validate();
 
         $dto = new UpdateNoteDto(
             id: $id,
             user_id: $userFetcher->getAuthUser()->getId(),
-            category_id: $request->category_id,
-            title: $request->title,
-            text: $request->text
+            category_id: $requestValidate->category_id,
+            title: $requestValidate->title,
+            text: $requestValidate->text
         );
         $entity = $useCase->handle($dto);
         return $this->json((new NoteVModel($entity))->getResult(), Response::HTTP_CREATED);
@@ -163,16 +175,20 @@ class NoteController extends AbstractController
 
     #[Route('/api/notes', name: 'notes_list', methods: ['GET'])]
     public function listNote(
-        ListNoteRM $request,
+        Request $request,
+        ListNoteRM $requestModel,
         UserFetcherInterface $userFetcher,
         ListNoteUseCase $useCase
     ): Response
     {
-        $request = $request->validate();
-        var_dump($request->toArray()); exit();
+        $requestValidate = $requestModel->setRequest($request);
+        $requestValidate->validate();
+
         $dto = new ListNoteDto(
             user_id: $userFetcher->getAuthUser()->getId(),
-            filterByCategoryId: $request->category_id,
+            filterByCategoryId: $requestValidate->category_id,
+            sortBy: $requestValidate->sort_by,
+            sortOrder: $requestValidate->sort_order
         );
 
         $collection = $useCase->handle($dto);
