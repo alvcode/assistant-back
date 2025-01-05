@@ -32,7 +32,7 @@ class NoteRepository extends ServiceEntityRepository
         }
 
         $sortBy = $listNoteDto->getSortBy() ? 'n.' .$listNoteDto->getSortBy() : 'n.id';
-        $order = $listNoteDto->getSortOrder() ? $listNoteDto->getSortOrder() : 'asc';
+        $order = $listNoteDto->getSortOrder() ?: 'asc';
         $result->orderBy($sortBy, $order);
 
         return $result->getQuery()->getResult();

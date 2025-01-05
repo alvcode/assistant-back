@@ -20,10 +20,6 @@ class LocaleListener
 
         $locale = $request->headers->get('locale', $this->defaultLocale);
 
-        if (strpos($locale, ',') !== false) {
-            $locale = explode(',', $locale)[0];
-        }
-
         if (!in_array($locale, $this->supportedLocales, true)) {
             $locale = $this->defaultLocale;
         }

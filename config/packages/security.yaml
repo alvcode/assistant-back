@@ -19,7 +19,7 @@ security:
                 check_path: /api/auth/login
                 username_path: login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                failure_handler: App\EventListener\CustomAuthenticationFailureHandler
 
             refresh_jwt:
                 check_path: /api/auth/refresh
